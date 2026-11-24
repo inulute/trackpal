@@ -9,15 +9,32 @@ NO SPEAKER way, so it works even with the Mac muted. Say **"Hey Pip"** and it li
 > formant tones it can play) is NO SPEAKER's work, adapted here under its MIT license. Go see the original.
 > It talks, sings and raps through your trackpad.
 
-## Run it
+## Install
 
 ```sh
+curl -fsSL https://raw.githubusercontent.com/inulute/trackpal/main/install.sh | sh
+```
+
+This downloads the latest release to `~/Applications/Pip.app` and opens it. Read [install.sh](install.sh)
+first if you like. It's short. Needs macOS 13+ and works on Apple Silicon and Intel Macs. The trackpad voice
+needs a Force Touch trackpad (MacBooks from 2015 on, or a Magic Trackpad 2+). Without one, Pip talks through
+the speakers instead. For the trackpad voice, mute the Mac, put it on a table, and keep your hands off the glass.
+
+To uninstall (this removes the app, its settings, its memory and any saved API keys):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/inulute/trackpal/main/install.sh | sh -s -- --uninstall
+```
+
+**From source:** needs the Command Line Tools (`xcode-select --install`).
+
+```sh
+git clone https://github.com/inulute/trackpal && cd trackpal
 ./build.sh run
 ```
 
-Needs macOS 13+ and the Command Line Tools (`xcode-select --install`). The trackpad voice needs a Force Touch
-trackpad. Without one, Pip talks through the speakers instead. For the trackpad voice, mute the Mac, put it on
-a table, and keep your hands off the glass.
+The app is ad-hoc signed, not notarized. Installed with the command above it opens normally. A `Pip.zip`
+downloaded in a browser gets quarantined, so right-click → Open the first time.
 
 Pip has no Dock icon. **Right-click Pip** (or use the ◕‿◕ menu bar icon) for its menu. To quit, choose Quit there.
 
