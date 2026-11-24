@@ -1,6 +1,6 @@
-# Pip
+# trackpal
 
-A tiny desk pet for your Mac. It sits in the corner of your screen with a glowing robot face, notices what
+**Pip**, a tiny desk pet for your Mac. It sits in the corner of your screen with a glowing robot face, notices what
 you're doing, and talks to you **through your trackpad**. The Force Touch motor buzzes out a voice, the
 NO SPEAKER way, so it works even with the Mac muted. Say **"Hey Pip"** and it listens and answers.
 
