@@ -111,4 +111,4 @@ break it.
 
 ## License
 
-The code adapted from NO SPEAKER stays under NO SPEAKER's MIT license (see `NOTICE`).
+MIT (see `LICENSE`). The code adapted from NO SPEAKER is also MIT, under its own copyright (see `NOTICE`).
