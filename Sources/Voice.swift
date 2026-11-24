@@ -120,7 +120,7 @@ private let sampleRate = 16000.0
 
 /// Has macOS's `say` speak the line into memory, then analyses it. Empty if `say` failed.
 func render(_ text: String, style: VoiceStyle) -> [Frame] {
-    let url = FileManager.default.temporaryDirectory.appendingPathComponent("trackpadai-\(getpid()).wav")
+    let url = FileManager.default.temporaryDirectory.appendingPathComponent("trackpal-\(getpid()).wav")
     defer { try? FileManager.default.removeItem(at: url) }
     let p = Process()
     p.executableURL = URL(fileURLWithPath: "/usr/bin/say")
@@ -354,7 +354,7 @@ final class Voice {
         return list.split(separator: "\n").contains { $0.lowercased().hasPrefix(name.lowercased() + " ") }
     }
 
-    private let queue = DispatchQueue(label: "trackpadai.voice", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "trackpal.voice", qos: .userInitiated)
     private var busy = false
     private let lock = NSLock()
     private let synth = NSSpeechSynthesizerShim()

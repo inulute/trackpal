@@ -16,7 +16,7 @@ final class FaceView: NSView {
     var onRightClick: ((NSEvent) -> Void)?
     /// Shows a "thinking" dots animation while the brain works.
     var thinking = false
-    /// Heard "Hey Pip": a pulsing ring shows it's all ears.
+    /// Heard "Hey Bizzy": a pulsing ring shows it's all ears.
     var listening = false
 
     private var moodChanged = CACurrentMediaTime()

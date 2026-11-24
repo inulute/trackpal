@@ -1,15 +1,15 @@
-// Listener.swift — "Hey Pip": listens for its name, then hears what you say and hands it to the brain.
+// Listener.swift — "Hey Bizzy": listens for its name, then hears what you say and hands it to the brain.
 //
 // Speech recognition runs on the Mac only (requiresOnDeviceRecognition): audio never leaves the computer.
 // If this Mac can't recognise speech on-device, listening stays off rather than sending audio to a server.
-// While Pip is talking, what the mic hears is ignored so it doesn't answer itself.
+// While Bizzy is talking, what the mic hears is ignored so it doesn't answer itself.
 
 import AVFoundation
 import Speech
 
-/// With TRACKPADAI_LOG=/some/file set, appends debug lines there (what it heard, why it stopped).
+/// With TRACKPAL_LOG=/some/file set, appends debug lines there (what it heard, why it stopped).
 func debugLog(_ msg: String) {
-    guard let path = ProcessInfo.processInfo.environment["TRACKPADAI_LOG"] else { return }
+    guard let path = ProcessInfo.processInfo.environment["TRACKPAL_LOG"] else { return }
     let line = "\(Date()) \(msg)\n"
     if let h = FileHandle(forWritingAtPath: path) { h.seekToEndOfFile(); h.write(Data(line.utf8)); h.closeFile() }
     else { FileManager.default.createFile(atPath: path, contents: Data(line.utf8)) }
@@ -43,9 +43,9 @@ final class Listener {
     private var restartTimer: Timer?
     private var lastCommandText = ""
 
-    /// "Hey Pip" (or Hi/OK/Yo), and what speech recognition tends to hear instead. The greeting is required,
-    /// so talking about "pip install" doesn't wake it.
-    private let wake = try! NSRegularExpression(pattern: #"(?:\b(?:hey|hi|hello|ok|okay|yo)[ ,]+(?:pip|pipp|pippy|pips|pep|peep|bip|pipe|babe|bebe|bib|pib)\b|^(?:hey|ok|okay),? (?:people|babe)\b)[ ,.!?]*"#, options: [.caseInsensitive])
+    /// "Hey Bizzy" (or Hi/OK/Yo), and what speech recognition tends to hear instead. The greeting is required,
+    /// so "busy" on its own doesn't wake it.
+    private let wake = try! NSRegularExpression(pattern: #"(?:\b(?:hey|hi|hello|ok|okay|yo)[ ,]+(?:bizzy|bizzie|bizzi|bizzee|bizy|busy|busey|lizzie|lizzy|dizzy|bitsy)\b)[ ,.!?]*"#, options: [.caseInsensitive])
 
     // MARK: Start / stop
 
@@ -85,7 +85,7 @@ final class Listener {
         state = .waiting
     }
 
-    /// Ignores the mic (while Pip talks). `resume` starts fresh so it doesn't act on its own voice.
+    /// Ignores the mic (while Bizzy talks). `resume` starts fresh so it doesn't act on its own voice.
     func pause() { paused = true; silenceTimer?.invalidate() }
     func resume() {
         guard paused else { return }
@@ -131,7 +131,7 @@ final class Listener {
         r.shouldReportPartialResults = true
         r.requiresOnDeviceRecognition = true
         r.addsPunctuation = true
-        r.contextualStrings = ["Pip", "Hey Pip"]
+        r.contextualStrings = ["Bizzy", "Hey Bizzy"]
         r.taskHint = .dictation
         lock.lock(); request = r; lock.unlock()
         taskStarted = Date()
@@ -173,7 +173,7 @@ final class Listener {
             state = .awake(since: Date())
             onWake?()
             // Keep the same recognition task (restarting mid-sentence loses words); the request is whatever
-            // comes after the last "Hey Pip" in this transcript.
+            // comes after the last "Hey Bizzy" in this transcript.
             let after = ns.substring(from: m.range.location + m.range.length).trimmingCharacters(in: .whitespacesAndNewlines)
             if !after.isEmpty { lastCommandText = after; onHeard?(after); armSilence() }
             armAwakeTimeout()
@@ -188,7 +188,7 @@ final class Listener {
         }
     }
 
-    /// The words after the last "Hey Pip" (or all of them, if the task restarted after it).
+    /// The words after the last "Hey Bizzy" (or all of them, if the task restarted after it).
     private func afterLastWake(_ text: String) -> String {
         let ns = text as NSString
         guard let m = wake.matches(in: text, range: NSRange(location: 0, length: ns.length)).last else {

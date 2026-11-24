@@ -1,4 +1,4 @@
-// Chat.swift — a small text box that pops up under Pip so you can talk to it. Enter sends, Esc closes.
+// Chat.swift — a small text box that pops up under Bizzy so you can talk to it. Enter sends, Esc closes.
 
 import AppKit
 
@@ -21,7 +21,7 @@ final class ChatPanel: NSPanel, NSTextFieldDelegate {
 
         field.frame = bg.bounds.insetBy(dx: 10, dy: 7)
         field.autoresizingMask = [.width, .height]
-        field.placeholderString = "Say something to Pip…"
+        field.placeholderString = "Say something to Bizzy…"
         field.isBordered = false; field.drawsBackground = false; field.focusRingType = .none
         field.font = .systemFont(ofSize: 13)
         field.delegate = self

@@ -1,4 +1,4 @@
-// ClarityTest.swift — `Pip --clarity-test`: scores how understandable each voice style is.
+// ClarityTest.swift — `Bizzy --clarity-test`: scores how understandable each voice style is.
 //
 // For each style it renders a few typical lines into the exact tones the motor would play, turns those into
 // audio, and asks Apple's on-device speech recognizer to transcribe them. The share of words it gets right is

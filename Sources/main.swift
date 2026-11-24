@@ -23,7 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         pet.orderFrontRegardless()
         pet.face.onPoke = { [weak self] in self?.voice.boopIfIdle(); self?.senses.poked() }
         pet.face.onDoubleClick = { [weak self] in self?.openChat() }
-        // Right-click Pip for its menu (the menu bar icon can be hidden behind the notch).
+        // Right-click Bizzy for its menu (the menu bar icon can be hidden behind the notch).
         pet.face.onRightClick = { [weak self] e in
             guard let self, let menu = statusItem.menu else { return }
             NSMenu.popUpContextMenu(menu, with: e, for: pet.face)
@@ -69,7 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             setMood(.idle, for: 1)
         }
         if listening { startListening() }
-        NSLog("trackpadai: brain = %@, voice = %@", brain.engineLabel, voice.hasTrackpad ? "trackpad" : "speakers")
+        NSLog("trackpal: brain = %@, voice = %@", brain.engineLabel, voice.hasTrackpad ? "trackpad" : "speakers")
     }
 
     // MARK: Reacting
@@ -251,12 +251,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc func addGeminiKey() { askForKey(provider: "gemini", title: "Google Gemini API key", hint: "Get one free at aistudio.google.com › Get API key.", engine: .gemini) }
     @objc func addClaudeKey() { askForKey(provider: "anthropic", title: "Claude API key", hint: "Get one at platform.claude.com › API keys.", engine: .claude) }
 
-    /// A small dialog to paste a key. Saved to ~/.trackpadai/<provider>_key, readable only by you.
+    /// A small dialog to paste a key. Saved to ~/.trackpal/<provider>_key, readable only by you.
     func askForKey(provider: String, title: String, hint: String, engine: Brain.Engine) {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.messageText = title
-        alert.informativeText = hint + "\nIt's stored only on this Mac, in ~/.trackpadai/\(provider)_key."
+        alert.informativeText = hint + "\nIt's stored only on this Mac, in ~/.trackpal/\(provider)_key."
         let field = NSSecureTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
         field.placeholderString = "Paste key"
         alert.accessoryView = field
@@ -273,7 +273,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func startListening() {
         listener.start { [weak self] ok in
             guard let self, !ok else { return }
-            NSLog("trackpadai: listening off: %@", listener.problem ?? "?")
+            NSLog("trackpal: listening off: %@", listener.problem ?? "?")
         }
     }
     @objc func toggleListening() {
@@ -315,16 +315,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 }
 
-/// `Pip --clarity-test`: compares voice styles by how well speech recognition understands them.
+/// `Bizzy --clarity-test`: compares voice styles by how well speech recognition understands them.
 if CommandLine.arguments.contains("--clarity-test") { ClarityTest.run(); exit(0) }
 
-/// `Pip --snapshot <dir>`: draws every mood to <dir>/<mood>.png and exits (for checking the face).
+/// `Bizzy --snapshot <dir>`: draws every mood to <dir>/<mood>.png and exits (for checking the face).
 if let i = CommandLine.arguments.firstIndex(of: "--snapshot"), i + 1 < CommandLine.arguments.count {
     let dir = URL(fileURLWithPath: CommandLine.arguments[i + 1])
     let view = FaceView(frame: NSRect(x: 0, y: 0, width: 250, height: FaceView.faceSize.height + FaceView.bubbleHeight))
     for m in Mood.allCases {
         view.mood = m
-        view.bubbleText = m == .happy ? "Hi! I'm Pip." : nil
+        view.bubbleText = m == .happy ? "Hi! I'm Bizzy." : nil
         RunLoop.current.run(until: Date().addingTimeInterval(0.4))
         let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
         view.cacheDisplay(in: view.bounds, to: rep)
@@ -333,7 +333,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--snapshot"), i + 1 < CommandLi
     exit(0)
 }
 
-/// `Pip --ask "<event or message>"`: prints what the brain would say, then exits (for testing the brain).
+/// `Bizzy --ask "<event or message>"`: prints what the brain would say, then exits (for testing the brain).
 if let i = CommandLine.arguments.firstIndex(of: "--ask"), i + 1 < CommandLine.arguments.count {
     let brain = Brain()
     let text = CommandLine.arguments[i + 1]

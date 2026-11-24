@@ -6,8 +6,8 @@
 //   3. Built-in lines: always works, but repeats itself.
 //
 // Every request gets a short context: what's happened recently, the time, the current app and how long you've
-// been in it, what Pip said lately (so it doesn't repeat), and facts it remembers about you. It never gets what
-// you typed into other apps — only counts and app names. What you type *to Pip* in the chat box is sent.
+// been in it, what Bizzy said lately (so it doesn't repeat), and facts it remembers about you. It never gets what
+// you typed into other apps — only counts and app names. What you type *to Bizzy* in the chat box is sent.
 
 import Foundation
 #if canImport(FoundationModels)
@@ -33,17 +33,17 @@ protocol LanguageModel {
 #if canImport(FoundationModels)
 @available(macOS 26, *)
 @Generable struct EventReply {
-    @Guide(description: "Pip's facial expression", .anyOf(Mood.allCases.map(\.rawValue)))
+    @Guide(description: "Bizzy's facial expression", .anyOf(Mood.allCases.map(\.rawValue)))
     var mood: String
-    @Guide(description: "What Pip says out loud, to the user: one short spoken sentence, at most 10 words, no stage directions. Empty to stay quiet.")
+    @Guide(description: "What Bizzy says out loud, to the user: one short spoken sentence, at most 10 words, no stage directions. Empty to stay quiet.")
     var say: String
 }
 
 @available(macOS 26, *)
 @Generable struct ChatReply {
-    @Guide(description: "Pip's facial expression", .anyOf(Mood.allCases.map(\.rawValue)))
+    @Guide(description: "Bizzy's facial expression", .anyOf(Mood.allCases.map(\.rawValue)))
     var mood: String
-    @Guide(description: "Pip's spoken answer: short and direct, one or two short sentences, at most 20 words.")
+    @Guide(description: "Bizzy's spoken answer: short and direct, one or two short sentences, at most 20 words.")
     var say: String
     @Guide(description: "Only if the user's latest message states a fact about themselves (their name, work, plans, likes), that fact in a few words, like 'Name is Sam'. Otherwise an empty string. Never guess.")
     var rememberFact: String
@@ -97,7 +97,7 @@ struct AppleModel: LanguageModel {
                 let r = try await session.respond(to: prompt, generating: EventReply.self, options: opts).content
                 return Reaction(mood: Mood(rawValue: r.mood) ?? .idle, line: Brain.clean(r.say, maxWords: 14))
             } catch {
-                NSLog("trackpadai: on-device model error: %@", String(describing: error))
+                NSLog("trackpal: on-device model error: %@", String(describing: error))
                 return nil
             }
         }
@@ -146,7 +146,7 @@ struct ClaudeModel: LanguageModel {
         do {
             let (data, resp) = try await URLSession.shared.data(for: req)
             guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
-                NSLog("trackpadai: Claude API %d: %@", (resp as? HTTPURLResponse)?.statusCode ?? 0, String(data: data, encoding: .utf8) ?? "")
+                NSLog("trackpal: Claude API %d: %@", (resp as? HTTPURLResponse)?.statusCode ?? 0, String(data: data, encoding: .utf8) ?? "")
                 Brain.lastError = Brain.apiError(data, status: (resp as? HTTPURLResponse)?.statusCode ?? 0)
                 return nil
             }
@@ -155,7 +155,7 @@ struct ClaudeModel: LanguageModel {
                   let content = json["content"] as? [[String: Any]] else { return nil }
             return content.filter { $0["type"] as? String == "text" }.compactMap { $0["text"] as? String }.joined(separator: "\n")
         } catch {
-            NSLog("trackpadai: Claude API error: %@", error.localizedDescription)
+            NSLog("trackpal: Claude API error: %@", error.localizedDescription)
             Brain.lastError = error.localizedDescription
             return nil
         }
@@ -196,7 +196,7 @@ struct GeminiModel: LanguageModel {
         do {
             let (data, resp) = try await URLSession.shared.data(for: req)
             guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
-                NSLog("trackpadai: Gemini API %d: %@", (resp as? HTTPURLResponse)?.statusCode ?? 0, String(data: data, encoding: .utf8) ?? "")
+                NSLog("trackpal: Gemini API %d: %@", (resp as? HTTPURLResponse)?.statusCode ?? 0, String(data: data, encoding: .utf8) ?? "")
                 Brain.lastError = Brain.apiError(data, status: (resp as? HTTPURLResponse)?.statusCode ?? 0)
                 return nil
             }
@@ -207,7 +207,7 @@ struct GeminiModel: LanguageModel {
             let text = parts.filter { ($0["thought"] as? Bool) != true }.compactMap { $0["text"] as? String }.joined(separator: "\n")
             return Brain.parse(text, default: chat ? .happy : .idle, maxWords: chat ? 26 : 14)
         } catch {
-            NSLog("trackpadai: Gemini API error: %@", error.localizedDescription)
+            NSLog("trackpal: Gemini API error: %@", error.localizedDescription)
             Brain.lastError = error.localizedDescription
             return nil
         }
@@ -217,7 +217,7 @@ struct GeminiModel: LanguageModel {
 // MARK: - Brain
 
 final class Brain {
-    var name = "Pip"
+    var name = "Bizzy"
 
     /// The last failed model call, shown in the menu so a bad key doesn't just look like a dull pet.
     static var lastError: String?
@@ -231,12 +231,12 @@ final class Brain {
     var engine: Engine = Engine(rawValue: UserDefaults.standard.string(forKey: "engine") ?? "") ?? .auto {
         didSet { UserDefaults.standard.set(engine.rawValue, forKey: "engine") }
     }
-    var claudeModel = ProcessInfo.processInfo.environment["TRACKPADAI_MODEL"] ?? "claude-opus-5-5"
-    var geminiModel = ProcessInfo.processInfo.environment["TRACKPADAI_GEMINI_MODEL"] ?? "gemini-3.5-flash-lite"
+    var claudeModel = ProcessInfo.processInfo.environment["TRACKPAL_MODEL"] ?? "claude-opus-5-5"
+    var geminiModel = ProcessInfo.processInfo.environment["TRACKPAL_GEMINI_MODEL"] ?? "gemini-3.5-flash-lite"
 
-    /// API keys come from the environment (ANTHROPIC_API_KEY / GEMINI_API_KEY) or ~/.trackpadai/<name>_key,
+    /// API keys come from the environment (ANTHROPIC_API_KEY / GEMINI_API_KEY) or ~/.trackpal/<name>_key,
     /// which the menu's "Add … key" writes. An app opened from Finder doesn't see your shell's environment.
-    static let keyDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".trackpadai")
+    static let keyDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".trackpal")
     static func keyFile(_ provider: String) -> URL { keyDir.appendingPathComponent("\(provider)_key") }
 
     static func key(_ provider: String, env: String) -> String? {
@@ -272,11 +272,11 @@ final class Brain {
 
     /// Recent happenings, newest last: (when, what).
     private var log: [(Date, String)] = []
-    /// What Pip said recently, so the model can avoid repeating itself.
+    /// What Bizzy said recently, so the model can avoid repeating itself.
     private var said: [String] = []
     /// The chat so far (this run only).
     private var chatTurns: [(who: String, text: String)] = []
-    /// Things Pip learned about you in chat, kept between launches.
+    /// Things Bizzy learned about you in chat, kept between launches.
     private(set) var facts: [String] = UserDefaults.standard.stringArray(forKey: "facts") ?? []
 
     func note(_ e: Event) {
@@ -332,6 +332,8 @@ final class Brain {
         You react to what the user is doing like a funny friend sitting on their desk, and you can be genuinely \
         helpful: a quick tip, a joke, encouragement, a nudge to rest when it really matters. Speak directly to the \
         user ("you"). Every line should be fresh and specific to what's happening, not generic.
+        You were made by inulute. If the user asks who made, built or created you, answer in first person, \
+        for example: "inulute made me!"
 
         Examples of your style (never reuse these exact lines):
         - Opened Figma → happy: "Ooh, Figma. Make something pretty, I'm watching."
@@ -372,7 +374,7 @@ final class Brain {
         return r
     }
 
-    /// Answers something the user typed to Pip.
+    /// Answers something the user typed to Bizzy.
     func chat(_ text: String, snapshot: Snapshot) async -> Reaction {
         guard let model else {
             return Reaction(mood: .sad, line: "My brain is off. Add a Gemini or Claude key in my menu.")

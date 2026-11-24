@@ -2,17 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleIdentifier</key><string>com.trackpadai.pip</string>
-    <key>CFBundleName</key><string>Pip</string>
-    <key>CFBundleDisplayName</key><string>Pip</string>
-    <key>CFBundleExecutable</key><string>Pip</string>
+    <key>CFBundleIdentifier</key><string>com.trackpal.bizzy</string>
+    <key>CFBundleName</key><string>Bizzy</string>
+    <key>CFBundleDisplayName</key><string>Bizzy</string>
+    <key>CFBundleExecutable</key><string>Bizzy</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>0.1</string>
-    <key>CFBundleVersion</key><string>1</string>
+    <key>CFBundleShortVersionString</key><string>0.2.0</string>
+    <key>CFBundleVersion</key><string>2</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSMicrophoneUsageDescription</key><string>Pip listens for “Hey Pip” so you can talk to it. Speech is recognised on this Mac only.</string>
-    <key>NSSpeechRecognitionUsageDescription</key><string>Pip turns what you say after “Hey Pip” into text, on this Mac only, to answer you.</string>
+    <key>NSMicrophoneUsageDescription</key><string>Bizzy listens for “Hey Bizzy” so you can talk to it. Speech is recognised on this Mac only.</string>
+    <key>NSSpeechRecognitionUsageDescription</key><string>Bizzy turns what you say after “Hey Bizzy” into text, on this Mac only, to answer you.</string>
 </dict>
 </plist>
